@@ -31,7 +31,10 @@ public class AdafruitL3gd20
 		this._clk = clk;
 	}
 
-	AdafruitL3gd20()
+	/**
+	 * Constructor for I2C communications
+	 */
+	public AdafruitL3gd20()
 	{
 		// use i2c
 		this._cs = -1;

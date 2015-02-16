@@ -104,67 +104,6 @@ public class IMUProtocol
 
 	public final static int IMU_PROTOCOL_MAX_MESSAGE_LENGTH = QUATERNION_UPDATE_MESSAGE_LENGTH;
 
-	static public class YPRUpdate
-	{
-
-		public float yaw;
-		public float pitch;
-		public float roll;
-		public float compass_heading;
-	}
-
-	static public class StreamCommand
-	{
-
-		public byte stream_type;
-	}
-
-	static public class StreamResponse
-	{
-
-		public byte stream_type;
-		public short gyro_fsr_dps;
-		public short accel_fsr_g;
-		public short update_rate_hz;
-		public float yaw_offset_degrees;
-		public short q1_offset;
-		public short q2_offset;
-		public short q3_offset;
-		public short q4_offset;
-		public short flags;
-	}
-
-	static public class QuaternionUpdate
-	{
-
-		public short q1;
-		public short q2;
-		public short q3;
-		public short q4;
-		public short accel_x;
-		public short accel_y;
-		public short accel_z;
-		public short mag_x;
-		public short mag_y;
-		public short mag_z;
-		public float temp_c;
-	}
-
-	static public class GyroUpdate
-	{
-
-		public short gyro_x;
-		public short gyro_y;
-		public short gyro_z;
-		public short accel_x;
-		public short accel_y;
-		public short accel_z;
-		public short mag_x;
-		public short mag_y;
-		public short mag_z;
-		public float temp_c;
-	}
-
 	public static int encodeStreamCommand(byte[] protocol_buffer, byte stream_type, byte update_rate_hz)
 	{
 		// Header
@@ -173,7 +112,7 @@ public class IMUProtocol
 
 		// Data
 		protocol_buffer[STREAM_CMD_STREAM_TYPE_INDEX] = stream_type;
-		byteToHex(update_rate_hz, protocol_buffer, STREAM_CMD_UPDATE_RATE_HZ_INDEX);
+		HexTools.byteToHex(update_rate_hz, protocol_buffer, STREAM_CMD_UPDATE_RATE_HZ_INDEX);
 
 		// Footer
 		encodeTermination(protocol_buffer, STREAM_CMD_MESSAGE_LENGTH, STREAM_CMD_MESSAGE_LENGTH - 4);
@@ -183,7 +122,6 @@ public class IMUProtocol
 
 	public static int decodeStreamResponse(byte[] buffer, int offset, int length, StreamResponse r)
 	{
-
 		if (length < STREAM_RESPONSE_MESSAGE_LENGTH)
 		{
 			return 0;
@@ -321,21 +259,11 @@ public class IMUProtocol
 			}
 			// convert checksum to two ascii bytes
 
-			byteToHex(checksum, buffer, content_length);
+			HexTools.byteToHex(checksum, buffer, content_length);
 			// Message Terminator
 			buffer[content_length + CHECKSUM_LENGTH + 0] = '\r';
 			buffer[content_length + CHECKSUM_LENGTH + 1] = '\n';
 		}
-	}
-
-	final protected static byte[] hexArray = new byte[] { (byte) '0', (byte) '1', (byte) '2', (byte) '3', (byte) '4', (byte) '5', (byte) '6',
-			(byte) '7', (byte) '8', (byte) '9', (byte) 'A', (byte) 'B', (byte) 'C', (byte) 'D', (byte) 'E', (byte) 'F' };
-
-	public static void byteToHex(byte thebyte, byte[] dest, int offset)
-	{
-		int v = thebyte & 0xFF;
-		dest[offset + 0] = hexArray[v >> 4];
-		dest[offset + 1] = hexArray[v & 0x0F];
 	}
 
 	public static short decodeProtocolUint16(byte[] uint16_string, int offset)

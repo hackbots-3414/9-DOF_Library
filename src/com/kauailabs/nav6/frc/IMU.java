@@ -13,6 +13,8 @@ package com.kauailabs.nav6.frc;
 import java.util.Arrays;
 
 import com.kauailabs.nav6.IMUProtocol;
+import com.kauailabs.nav6.StreamResponse;
+import com.kauailabs.nav6.YPRUpdate;
 
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.SensorBase;
@@ -61,7 +63,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 
 	double last_update_time;
 	boolean stop = false;
-	private IMUProtocol.YPRUpdate ypr_update_data;
+	private YPRUpdate ypr_update_data;
 	protected byte update_type = IMUProtocol.MSGID_YPR_UPDATE;
 
 	/**
@@ -77,7 +79,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 	 */
 	public IMU(SerialPort serial_port, byte update_rate_hz)
 	{
-		ypr_update_data = new IMUProtocol.YPRUpdate();
+		ypr_update_data = new YPRUpdate();
 		this.update_rate_hz = update_rate_hz;
 		flags = 0;
 		accel_fsr_g = DEFAULT_ACCEL_FSR_G;
@@ -138,7 +140,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 		}
 	}
 
-	protected void setStreamResponse(IMUProtocol.StreamResponse response)
+	protected void setStreamResponse(StreamResponse response)
 	{
 
 		flags = response.flags;
@@ -392,7 +394,7 @@ public class IMU extends SensorBase implements PIDSource, LiveWindowSendable, Ru
 			ex.printStackTrace();
 		}
 
-		IMUProtocol.StreamResponse response = new IMUProtocol.StreamResponse();
+		StreamResponse response = new StreamResponse();
 
 		byte[] stream_command = new byte[256];
 

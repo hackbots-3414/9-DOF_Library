@@ -64,10 +64,13 @@ public class AdafruitLsm303
 			;
 
 		// Note high before low (different than accel)
+		// X
 		xhi = Wire.read();
 		xlo = Wire.read();
+		// Z
 		zhi = Wire.read();
 		zlo = Wire.read();
+		// Y
 		yhi = Wire.read();
 		ylo = Wire.read();
 

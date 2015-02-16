@@ -19,29 +19,6 @@ import com.kauailabs.nav6.IMUProtocol;
 
 public class AHRSProtocol extends IMUProtocol
 {
-
-	public class AHRS_TUNING_VAR_ID
-	{
-		public static final byte UNSPECIFIED = 0;
-		public static final byte MOTION_THRESHOLD = 1; /* In G */
-		public static final byte YAW_STABLE_THRESHOLD = 2; /* In Degrees */
-		public static final byte MAG_DISTURBANCE_THRESHOLD = 3; /* Ratio */
-		public static final byte SEA_LEVEL_PRESSURE = 4; /* Millibars */
-	};
-
-	public class AHRS_DATA_TYPE
-	{
-		public static final byte TUNING_VARIABLE = 0;
-		public static final byte MAG_CALIBRATION = 1;
-		public static final byte BOARD_IDENTITY = 2;
-	};
-
-	public class AHRS_DATA_ACTION
-	{
-		public static final byte DATA_GET = 0;
-		public static final byte DATA_SET = 1;
-	};
-
 	public final static char BINARY_PACKET_INDICATOR_CHAR = '#';
 
 	/* AHRS Protocol encodes certain data in binary format, unlike the IMU */
@@ -159,81 +136,6 @@ public class AHRSProtocol extends IMUProtocol
 	final static int BOARD_IDENTITY_RESPONSE_CHECKSUM_INDEX = 22;
 	final static int BOARD_IDENTITY_RESPONSE_TERMINATOR_INDEX = 24;
 	final static int BOARD_IDENTITY_RESPONSE_MESSAGE_LENGTH = 26;
-
-	static public class AHRSUpdate
-	{
-		public float yaw;
-		public float pitch;
-		public float roll;
-		public float compass_heading;
-		public float altitude;
-		public float fused_heading;
-		public float linear_accel_x;
-		public float linear_accel_y;
-		public float linear_accel_z;
-		public short cal_mag_x;
-		public short cal_mag_y;
-		public short cal_mag_z;
-		public float mag_field_norm_ratio;
-		public float mag_field_norm_scalar;
-		public float mpu_temp;
-		public short raw_mag_x;
-		public short raw_mag_y;
-		public short raw_mag_z;
-		public short quat_w;
-		public short quat_x;
-		public short quat_y;
-		public short quat_z;
-		public float barometric_pressure;
-		public float baro_temp;
-		public byte op_status;
-		public byte sensor_status;
-		public byte cal_status;
-		public byte selftest_status;
-	}
-
-	static public class DataSetResponse
-	{
-		public byte data_type;
-		public byte var_id; /* If type = TUNING_VARIABLE */
-		public byte status;
-	};
-
-	static public class MagCalData
-	{
-		byte action;
-		public short mag_bias[]; /* 3 Values */
-		public float mag_xform[][]; /* 3 x 3 Values */
-		public float earth_mag_field_norm;
-
-		public MagCalData()
-		{
-			mag_bias = new short[3];
-			mag_xform = new float[3][3];
-		}
-	};
-
-	static public class TuningVar
-	{
-		public byte action;
-		public byte var_id; /* If type = TUNING_VARIABLE */
-		float value;
-	};
-
-	static public class BoardID
-	{
-		public byte type;
-		public byte hw_rev;
-		public byte fw_ver_major;
-		public byte fw_ver_minor;
-		public short fw_revision;
-		public byte unique_id[];
-
-		public BoardID()
-		{
-			unique_id = new byte[12];
-		}
-	};
 
 	public static int decodeAHRSUpdate(byte[] buffer, int offset, int length, AHRSUpdate u)
 	{

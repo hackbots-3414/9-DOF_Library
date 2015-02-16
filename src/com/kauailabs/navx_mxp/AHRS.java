@@ -11,6 +11,7 @@
 package com.kauailabs.navx_mxp;
 
 import com.kauailabs.nav6.frc.IMU;
+
 import edu.wpi.first.wpilibj.SerialPort;
 
 /**
@@ -30,7 +31,7 @@ public class AHRS extends IMU
 
 	static final byte NAVX_MXP_DEFAULT_UPDATE_RATE_HZ = 60;
 
-	private AHRSProtocol.AHRSUpdate ahrs_update_data;
+	private AHRSUpdate ahrs_update_data;
 	volatile float world_linear_accel_x;
 	volatile float world_linear_accel_y;
 	volatile float world_linear_accel_z;
@@ -63,7 +64,7 @@ public class AHRS extends IMU
 	public AHRS(SerialPort serial_port, byte update_rate_hz)
 	{
 		super(serial_port, update_rate_hz);
-		ahrs_update_data = new AHRSProtocol.AHRSUpdate();
+		ahrs_update_data = new AHRSUpdate();
 		update_type = AHRSProtocol.MSGID_AHRS_UPDATE;
 		world_linear_accel_x = world_linear_accel_y = world_linear_accel_z = mpu_temp_c = fused_heading = altitude = barometric_pressure = baro_sensor_temp_c = mag_field_norm_ratio = 0.0f;
 		cal_mag_x = cal_mag_y = cal_mag_z = 0;
@@ -287,7 +288,7 @@ public class AHRS extends IMU
 		return this.cal_mag_z;
 	}
 
-	private void setAHRSData(AHRSProtocol.AHRSUpdate ahrs_update)
+	private void setAHRSData(AHRSUpdate ahrs_update)
 	{
 		synchronized (this)
 		{ // synchronized block

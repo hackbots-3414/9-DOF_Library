@@ -13,7 +13,7 @@ public class OrientationVector extends SensorVector
 	 */
     public float getRoll()
     {
-    	return this.value1;
+    	return this.valueX;
     }
 
     /**
@@ -22,7 +22,7 @@ public class OrientationVector extends SensorVector
      */
     public float getPitch()
     {
-    	return this.value2;
+    	return this.valueY;
     }
     
     /**
@@ -31,7 +31,7 @@ public class OrientationVector extends SensorVector
      */
     public float getHeading()
     {
-    	return this.value3;
+    	return this.valueZ;
     }
 
 }

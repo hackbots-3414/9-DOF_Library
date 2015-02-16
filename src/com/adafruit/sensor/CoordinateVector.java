@@ -9,16 +9,16 @@ public class CoordinateVector extends SensorVector
 
 	public float getX()
 	{
-		return this.value1;
+		return this.valueX;
 	}
 	
 	public float getY()
 	{
-		return this.value2;
+		return this.valueY;
 	}
     
 	public float getZ()
 	{
-		return this.value3;
+		return this.valueZ;
 	}
 }

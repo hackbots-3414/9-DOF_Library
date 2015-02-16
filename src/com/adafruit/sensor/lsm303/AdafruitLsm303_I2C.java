@@ -6,7 +6,7 @@ import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_
 import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_MR_REG_M;
 import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_CRB_REG_M;
 
-public class AdafruitLsm303
+public class AdafruitLsm303_I2C
 {
 	private final int LSM303_ADDRESS_ACCEL = (0x32 >> 1);         // 0011001x
 	private final int LSM303_ADDRESS_MAG = (0x3C >> 1);         // 0011110x

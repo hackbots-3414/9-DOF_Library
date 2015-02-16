@@ -7,6 +7,14 @@ public class Lsm303MagData
     private float z;
     private float orientation;
     
+    public Lsm303MagData(float x, float y, float z, float orientation)
+    {
+    	this.x = x;
+    	this.y = y;
+    	this.z = z;
+    	this.orientation = orientation;
+    }
+    
 	public float getX()
 	{
 		return x;

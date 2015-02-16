@@ -2,17 +2,16 @@ package com.adafruit.sensor;
 
 public abstract class SensorVector
 {
-	// Used to return a vector in a common format.
-	protected float value1;
-	protected float value2;
-	protected float value3;
+	private float valueX;
+	private float valueY;
+	private float valueZ;
 	private int status;
 	
-	public SensorVector(float value1, float value2, float value3)
+	public SensorVector(float valueX, float valueY, float valueZ)
 	{
-		this.value1 = value1;
-		this.value2 = value2;
-		this.value3 = value3;
+		this.valueX = valueX;
+		this.valueY = valueY;
+		this.valueZ = valueZ;
 	}
 
     public void setStatus(int status)
@@ -24,4 +23,34 @@ public abstract class SensorVector
     {
     	return this.status;
     }
+
+	public float getValueX()
+	{
+		return valueX;
+	}
+
+	public void setValueX(float valueX)
+	{
+		this.valueX = valueX;
+	}
+
+	public float getValueY()
+	{
+		return valueY;
+	}
+
+	public void setValueY(float valueY)
+	{
+		this.valueY = valueY;
+	}
+
+	public float getValueZ()
+	{
+		return valueZ;
+	}
+
+	public void setValueZ(float valueZ)
+	{
+		this.valueZ = valueZ;
+	}
 }

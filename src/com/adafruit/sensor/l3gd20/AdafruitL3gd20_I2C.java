@@ -5,7 +5,7 @@ import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_CTRL_RE
 import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_OUT_X_L;
 import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_WHO_AM_I;
 
-public class AdafruitL3gd20
+public class AdafruitL3gd20_I2C
 {
 	private final int L3GD20_ADDRESS = 0x6B;        		// 1101011
 	private final int L3GD20_POLL_TIMEOUT = 100;         	// Maximum number of read attempts
@@ -23,42 +23,21 @@ public class AdafruitL3gd20
 	private int _clk;
 	private int _cs;
 
-	public AdafruitL3gd20(int cs, int miso, int mosi, int clk)
-	{
-		this._cs = cs;
-		this._miso = miso;
-		this._mosi = mosi;
-		this._clk = clk;
-	}
-
 	/**
-	 * Constructor for I2C communications
+	 * Constructor for I<sup>2</sup>C communications
 	 */
 	public AdafruitL3gd20()
 	{
 		// use i2c
-		this._cs = -1;
+		this._cs = -1;		// Signals i2C communications
 		this._mosi = -1;
 		this._miso = -1;
 		this._clk = -1;
 	}
 
-	public boolean begin(L3gd20Range rng, byte addr)
+	public boolean begin(L3gd20Range range, byte address)
 	{
-		if (_cs == -1)
-		{
-			Wire.begin();
-		} else
-		{
-			pinMode(_cs, OUTPUT);
-			pinMode(_clk, OUTPUT);
-			pinMode(_mosi, OUTPUT);
-			pinMode(_miso, INPUT);
-			digitalWrite(_cs, HIGH);
-		}
-
-		address = addr;
-		range = rng;
+		Wire.begin();
 
 		/*
 		 * Make sure we have the correct chip ID since this checks for correct address and that the IC is properly connected
@@ -139,41 +118,22 @@ public class AdafruitL3gd20
 		int zlo;
 		int zhi;
 
-		if (_cs == -1) 
-		{
-			Wire.beginTransmission(address);
-			// Make sure to set address auto-increment bit
-			Wire.write(L3GD20_REGISTER_OUT_X_L.getRegister() | 0x80);
-			Wire.endTransmission();
-			Wire.requestFrom(address, (byte)6);
-	    
-			// Wait around until enough data is available
-			while (Wire.available() < 6);
-	    
-			xlo = Wire.read();
-			xhi = Wire.read();
-			ylo = Wire.read();
-			yhi = Wire.read();
-			zlo = Wire.read();
-			zhi = Wire.read();
+		Wire.beginTransmission(address);
+		// Make sure to set address auto-increment bit
+		Wire.write(L3GD20_REGISTER_OUT_X_L.getRegister() | 0x80);
+		Wire.endTransmission();
+		Wire.requestFrom(address, (byte)6);
+    
+		// Wait around until enough data is available
+		while (Wire.available() < 6);
+    
+		xlo = Wire.read();
+		xhi = Wire.read();
+		ylo = Wire.read();
+		yhi = Wire.read();
+		zlo = Wire.read();
+		zhi = Wire.read();
 
-		} 
-		else 
-		{
-			digitalWrite(_clk, HIGH);
-			digitalWrite(_cs, LOW);
-
-			SPIxfer(L3GD20_REGISTER_OUT_X_L.getRegister() | 0x80 | 0x40); // SPI read, autoincrement
-			delay(10);
-			xlo = SPIxfer(0xFF);
-			xhi = SPIxfer(0xFF);
-			ylo = SPIxfer(0xFF);
-			yhi = SPIxfer(0xFF);
-			zlo = SPIxfer(0xFF);
-			zhi = SPIxfer(0xFF);
-
-			digitalWrite(_cs, HIGH);
-		}
 		// Shift values to create properly formed integer (low byte first)
 		data.setX(xlo | (xhi << 8));
 		data.setY(ylo | (yhi << 8));
@@ -205,75 +165,22 @@ public class AdafruitL3gd20
 	 ***************************************************************************/
 	private void write8(L3gd20Registers reg, byte value)
 	{
-		if (_cs == -1) 
-		{
-			// use i2c
-			Wire.beginTransmission(address);
-			Wire.write(reg.getRegister());
-			Wire.write(value);
-			Wire.endTransmission();
-		} 
-		else 
-		{
-			digitalWrite(_clk, HIGH);
-			digitalWrite(_cs, LOW);
-
-			SPIxfer(reg.getRegister());
-			SPIxfer(value);
-
-			digitalWrite(_cs, HIGH);
-		}
+		Wire.beginTransmission(address);
+		Wire.write(reg.getRegister());
+		Wire.write(value);
+		Wire.endTransmission();
 	}
 
 	private byte read8(L3gd20Registers reg)
 	{
-		int value;
+		byte value;
 
-		if (_cs == -1) 
-		{
-			// use i2c
-			Wire.beginTransmission(address);
-			Wire.write(reg.getRegister());
-			Wire.endTransmission();
-			Wire.requestFrom(address, (byte)1);
-			value = Wire.read();
-			Wire.endTransmission();
-		} 
-		else 
-		{
-			digitalWrite(_clk, HIGH);
-			digitalWrite(_cs, LOW);
-
-			SPIxfer(reg.getRegister() | 0x80); // set READ bit
-			value = SPIxfer(0xFF);
-
-			digitalWrite(_cs, HIGH);
-		}
-
-		return value;
-	}
-
-	int SPIxfer(int x) 
-	{
-		int value = 0;
-
-		for (int i=7; i>=0; i--) 
-		{
-			digitalWrite(_clk, LOW);
-			if (x & (1<<i)) 
-			{
-				digitalWrite(_mosi, HIGH);
-			} 
-			else 
-			{
-				digitalWrite(_mosi, LOW);
-			}
-			digitalWrite(_clk, HIGH);
-			if (digitalRead(_miso))
-			{
-				value |= (1<<i);
-			}
-		}
+		Wire.beginTransmission(address);
+		Wire.write(reg.getRegister());
+		Wire.endTransmission();
+		Wire.requestFrom(address, (byte)1);
+		value = Wire.read();
+		Wire.endTransmission();
 
 		return value;
 	}

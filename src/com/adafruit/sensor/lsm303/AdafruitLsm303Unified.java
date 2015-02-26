@@ -12,6 +12,7 @@ public abstract class AdafruitLsm303Unified extends AdafruitSensor
 	
     // CHIP ID
     public final int LSM303_ID = 0b11010100;
+	private final double kGsPerLSB = 0.00390625;
 
     static float _lsm303Accel_MG_LSB     = 0.001F;   // 1, 2, 4 or 12 mg per lsb
     static float _lsm303Mag_Gauss_LSB_XY = 1100.0F;  // Varies with gain
@@ -23,7 +24,7 @@ public abstract class AdafruitLsm303Unified extends AdafruitSensor
     }
     
     // Abstract away platform differences in Arduino wire library
-    private void write8(byte address, byte reg, byte value)
+    protected void write8(byte address, byte reg, byte value)
     {
     	Wire.beginTransmission(address);
 		Wire.send(reg);
@@ -31,7 +32,7 @@ public abstract class AdafruitLsm303Unified extends AdafruitSensor
 		Wire.endTransmission();
     }
 
-    private byte read8(byte address, byte reg)
+    protected byte read8(byte address, byte reg)
     {
     	byte value;
 
@@ -44,6 +45,14 @@ public abstract class AdafruitLsm303Unified extends AdafruitSensor
 		
 		return value;
     }
+    
+	protected double doubleFromBytes(byte first, byte second)
+	{
+		short tempLow = (short) (first & 0xff);
+		short tempHigh = (short) ((second << 8) & 0xff00);
+		return (tempLow | tempHigh) * kGsPerLSB;
+	}
+
 
 	public abstract SensorEvent getEvent();
 

@@ -2,23 +2,32 @@ package com.adafruit.sensor.lsm303;
 
 import static com.adafruit.sensor.lsm303.Lsm303AccelRegisters.LSM303_REGISTER_ACCEL_CTRL_REG1_A;
 import static com.adafruit.sensor.lsm303.Lsm303AccelRegisters.LSM303_REGISTER_ACCEL_OUT_X_L_A;
-import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_OUT_X_H_M;
-import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_MR_REG_M;
 import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_CRB_REG_M;
+import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_MR_REG_M;
+import static com.adafruit.sensor.lsm303.Lsm303MagRegisters.LSM303_REGISTER_MAG_OUT_X_H_M;
+import edu.wpi.first.wpilibj.I2C;
 
 public class AdafruitLsm303_I2C
 {
+	private static final byte kAddress = 0x3A;
 	private final int LSM303_ADDRESS_ACCEL = (0x32 >> 1);         // 0011001x
 	private final int LSM303_ADDRESS_MAG = (0x3C >> 1);         // 0011110x
 	private final int LSM303_ID = (0b11010100);
 
 	private Lsm303AccelData accelData;    // Last read accelerometer data will be available here
 	private Lsm303MagData magData;        // Last read magnetometer data will be available here
+	private I2C m_i2c;
 
+	public AdafruitLsm303_I2C(int moduleNumber)
+	{
+		DigitalModule module = DigitalModule.getInstance(moduleNumber);
+		m_i2c = module.getI2C(kAddress);		
+	}
+	
 	public boolean begin()
 	{
-		Wire.begin();
-		Serial.println("Wire");
+		m_i2c.begin();
+//		m_i2c.println("Wire");
 
 		// Enable the accelerometer
 		write8(LSM303_ADDRESS_ACCEL, LSM303_REGISTER_ACCEL_CTRL_REG1_A.getRegister(), 0x27);

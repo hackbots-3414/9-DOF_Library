@@ -4,6 +4,7 @@ import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_CTRL_RE
 import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_CTRL_REG4;
 import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_OUT_X_L;
 import static com.adafruit.sensor.l3gd20.L3gd20Registers.L3GD20_REGISTER_WHO_AM_I;
+import edu.wpi.first.wpilibj.I2C;
 
 public class AdafruitL3gd20_I2C
 {
@@ -22,12 +23,16 @@ public class AdafruitL3gd20_I2C
 	private int _mosi;
 	private int _clk;
 	private int _cs;
+	private I2C m_i2c;
 
 	/**
 	 * Constructor for I<sup>2</sup>C communications
 	 */
-	public AdafruitL3gd20()
+	public AdafruitL3gd20_I2C(int moduleNumber)
 	{
+		DigitalModule module = DigitalModule.getInstance(moduleNumber);
+		m_i2c = module.getI2C(kAddress);
+
 		// use i2c
 		this._cs = -1;		// Signals i2C communications
 		this._mosi = -1;
